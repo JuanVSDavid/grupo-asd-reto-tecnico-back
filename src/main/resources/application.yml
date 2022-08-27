@@ -1,0 +1,27 @@
+server:
+    port: 8585
+    error:
+        include-stacktrace: never
+jms:
+    jwt:
+        security:
+            enabled: true
+        timezone: "America/Bogota"
+        issuer: "localhost:8585"
+        token:
+            auth:
+                path: "/api/oauth/client_credentials/access_token"
+            secret: "vamosAPorMasPuntos"
+            expires_in: 3600
+        excluded:
+            path: "" #Para serparar las rutas que no son necesarias autenticar, se separan por comas
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+    datasource:
+        url: jdbc:mysql://sql10.freemysqlhosting.net/sql10515572
+        username: sql10515572
+        password: 3cmn7KY5CU
+        port: 3306
