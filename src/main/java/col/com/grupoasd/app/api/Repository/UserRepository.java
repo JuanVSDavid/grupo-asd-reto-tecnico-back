@@ -8,6 +8,6 @@ import col.com.grupoasd.app.api.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-    @Query(value = "SELECT * FROM user WHERE username = ?1 AND password = ?2", nativeQuery = true)
-    public User getUserByUsername(String username, String password);
+    @Query(value = "SELECT * FROM users WHERE username = ?1 AND password = ?2", nativeQuery = true)
+    public User getUserByUsernameAndPassword(String username, String password);
 }

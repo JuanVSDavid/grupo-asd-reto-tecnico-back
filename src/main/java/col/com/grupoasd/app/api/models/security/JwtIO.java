@@ -48,7 +48,7 @@ public class JwtIO {
         return JWT.getEncoder().encode(jwt, signer);
     }
 
-    public Boolean validateToken(String encodedJWT) {
+    public Boolean validateToken(String encodedJWT) throws Exception {
         boolean result = false;
         JWT jwt = jwt(encodedJWT);
         try {
@@ -59,18 +59,18 @@ public class JwtIO {
         return result;
     }
 
-    public String getPayload(String encodedJWT) {
+    public String getPayload(String encodedJWT) throws Exception {
         JWT jwt = jwt(encodedJWT);
         return jwt.subject;
     }
 
     /**
-     * Este método se encarga de codificar el token
+     * Este método se encarga de decodificar el token
      * 
      * @param encodedJWT
      * @return
      */
-    private JWT jwt(String encodedJWT) {
+    private JWT jwt(String encodedJWT) throws Exception {
         Verifier verifier = HMACVerifier.newVerifier(this.SECRET);
         return JWT.getDecoder().decode(encodedJWT, verifier);
     }

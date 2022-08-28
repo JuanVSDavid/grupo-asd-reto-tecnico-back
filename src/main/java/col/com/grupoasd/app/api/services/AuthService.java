@@ -39,12 +39,10 @@ public class AuthService {
         return jwt;
     }
 
-    public boolean validateUser(User user) throws UsernameNotFoundException {
-        boolean result = true;
-        if (Objects.isNull(userRepository.getUserByUsername(user.getUsername(), user.getPassword()))) {
+    public void validateUser(User user) throws UsernameNotFoundException {
+        if (Objects.isNull(userRepository.getUserByUsernameAndPassword(user.getUsername(), user.getPassword()))) {
             throw new UsernameNotFoundException("Bad credentials");
         }
-        return result;
     }
 
 }
