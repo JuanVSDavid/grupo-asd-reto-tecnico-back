@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,8 +26,8 @@ public abstract class Responsable implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
     private String nombre;
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
     private String creadoPor;
-    @OneToMany(mappedBy = "responsable")
+    @OneToMany(mappedBy = "responsable", fetch = FetchType.LAZY)
     private List<ActivosFijos> activosFijos;
 }
