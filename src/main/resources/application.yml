@@ -1,5 +1,5 @@
 server:
-    port: 8585
+    port: 8080
     error:
         include-stacktrace: never
 jms:
@@ -14,7 +14,7 @@ jms:
             secret: "vamosAPorMasPuntos"
             expires_in: 3600
         excluded:
-            path: "" #Para serparar las rutas que no son necesarias autenticar, se separan por comas
+            path: "/api/oauth/register,/error,/v3/api-docs" #Para serparar las rutas que no son necesarias autenticar, se separan por comas
 spring:
     jpa:
         hibernate:
@@ -25,3 +25,6 @@ spring:
         username: sql10515572
         password: 3cmn7KY5CU
         port: 3306
+    mvc:
+        pathmatch:
+            matching-strategy: ANT_PATH_MATCHER

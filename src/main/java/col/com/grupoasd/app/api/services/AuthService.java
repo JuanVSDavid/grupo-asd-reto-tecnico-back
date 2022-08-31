@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import col.com.grupoasd.app.api.Repository.UserRepository;
 import col.com.grupoasd.app.api.models.JwtResponse;
 import col.com.grupoasd.app.api.models.User;
+import col.com.grupoasd.app.api.models.exceptions.AlreadyExistsException;
 import col.com.grupoasd.app.api.models.exceptions.UsernameNotFoundException;
 import col.com.grupoasd.app.api.models.security.JwtIO;
 import col.com.grupoasd.app.api.utils.DateUtils;
@@ -43,6 +44,14 @@ public class AuthService {
         if (Objects.isNull(userRepository.getUserByUsernameAndPassword(user.getUsername(), user.getPassword()))) {
             throw new UsernameNotFoundException("Bad credentials");
         }
+    }
+
+    public User registerUser(User user) throws AlreadyExistsException {
+        System.out.println(user.getPassword());
+        if (!Objects.isNull(userRepository.findById(user.getUsername()))) {
+            return userRepository.save(user);
+        }
+        throw new AlreadyExistsException("User already exists");
     }
 
 }

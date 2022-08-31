@@ -9,6 +9,6 @@ public interface IEditable<T> {
 
     public void deleteItem(Object key) throws NotFoundException;
 
-    public T insertItem(T item) throws AlreadyExistsException;
+    public T insertItem(T item, String username) throws AlreadyExistsException;
 
 }

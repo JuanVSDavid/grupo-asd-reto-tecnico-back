@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import col.com.grupoasd.app.api.models.exceptions.ApiUnauthorizedException;
+
 @Component
 public class InterceptorJwtIO implements HandlerInterceptor {
 
@@ -26,15 +28,17 @@ public class InterceptorJwtIO implements HandlerInterceptor {
             throws Exception {
         boolean validate = false;
         String url = request.getRequestURI();
-        if (url.equals(this.AUTH_PATH) || excluded(url)) {
+        if (url.equals(this.AUTH_PATH) || excluded(url) || url.contains("swagger")) {
             validate = true;
         }
         if (!validate && request.getHeader("Authorization") != null && !request.getHeader("Authorization").isEmpty()) {
             String token = request.getHeader("Authorization").replace("Bearer ", "");
+            request.setAttribute("usuario",
+                    jwtIO.getPayload(token));
             validate = !jwtIO.validateToken(token);
         }
         if (!validate) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            throw new ApiUnauthorizedException("Invalid authorization");
         }
         return validate;
     }

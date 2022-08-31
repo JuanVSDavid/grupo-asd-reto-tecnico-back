@@ -1,5 +1,6 @@
 package col.com.grupoasd.app.api.services;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -21,8 +22,13 @@ public class ActivosFijosService implements IEditable<ActivosFijos>, IReadonly<A
     private ActivosFijosRepository activosFijosRepository;
 
     @Override
-    public List<ActivosFijos> getListOfItems() {
-        return activosFijosRepository.findActivosFijosIsNotDeleted();
+    public List<ActivosFijos> getListOfItems() throws NotFoundException {
+        List<ActivosFijos> activosFijos = activosFijosRepository.findActivosFijosIsNotDeleted();
+        if (activosFijos.size() == 0 || activosFijos.isEmpty()) {
+            throw new NotFoundException(
+                    "No se encontro ningun activo fijo");
+        }
+        return activosFijos;
     }
 
     @Override
@@ -37,16 +43,19 @@ public class ActivosFijosService implements IEditable<ActivosFijos>, IReadonly<A
     @Override
     public ActivosFijos updateItem(Object key, ActivosFijos item)
             throws NotFoundException {
-        ActivosFijos activosFijos = activosFijosRepository.findActivosFijosByIdAndIsNotDeleted((long) key);
+        ActivosFijos activosFijos = activosFijosRepository.findActivosFijosByIdAndIsNotDeleted(
+                Long.parseLong(key.toString()));
         if (Objects.isNull(activosFijos)) {
             throw new NotFoundException("No se encontro el activo fijo con el id" + key);
         }
-        return activosFijosRepository.save(activosFijos);
+        item.setId(Long.parseLong(key.toString()));
+        return activosFijosRepository.save(item);
     }
 
     @Override
     public void deleteItem(Object key) throws NotFoundException {
-        ActivosFijos activosFijos = activosFijosRepository.findActivosFijosByIdAndIsNotDeleted((long) key);
+        ActivosFijos activosFijos = activosFijosRepository
+                .findActivosFijosByIdAndIsNotDeleted(Long.parseLong(key.toString()));
         if (Objects.isNull(activosFijos)) {
             throw new NotFoundException("No se encontro el activo fijo con el id " + key);
         }
@@ -70,21 +79,25 @@ public class ActivosFijosService implements IEditable<ActivosFijos>, IReadonly<A
         return activosFijos;
     }
 
-    public List<ActivosFijos> getActivosFijosByFechaDeCompra(Date fechaDeCompra) throws NotFoundException {
+    public List<ActivosFijos> getActivosFijosByFechaDeCompra(String fechaDeCompra)
+            throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = format.parse(fechaDeCompra);
         List<ActivosFijos> activosFijos = activosFijosRepository
-                .findActivosFijosBySerialAndFechaDeCompraAndIsNotDeleted(fechaDeCompra);
+                .findActivosFijosBySerialAndFechaDeCompraAndIsNotDeleted(date);
         if (activosFijos.size() == 0 || activosFijos.isEmpty()) {
             throw new NotFoundException(
-                    "No se encontro ningun activo fijo con la fecha de compra " + fechaDeCompra.getTime());
+                    "No se encontro ningun activo fijo con la fecha de compra " + fechaDeCompra);
         }
         return activosFijos;
     }
 
     @Override
-    public ActivosFijos insertItem(ActivosFijos item) throws AlreadyExistsException {
+    public ActivosFijos insertItem(ActivosFijos item, String username) throws AlreadyExistsException {
         if (!Objects.isNull(activosFijosRepository.findActivosFijosBySerialAndIsNotDeleted(item.getSerial()))) {
             throw new AlreadyExistsException("El activo fijo con el serial " + item.getSerial() + " ya existe");
         }
+        item.setCreadoPor(username.replaceAll("\"\"", "\""));
         return activosFijosRepository.save(item);
     }
 
