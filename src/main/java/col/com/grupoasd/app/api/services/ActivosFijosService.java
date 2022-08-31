@@ -49,6 +49,7 @@ public class ActivosFijosService implements IEditable<ActivosFijos>, IReadonly<A
             throw new NotFoundException("No se encontro el activo fijo con el id" + key);
         }
         item.setId(Long.parseLong(key.toString()));
+        item.setCreadoPor(activosFijos.getCreadoPor());
         return activosFijosRepository.save(item);
     }
 
